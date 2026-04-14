@@ -94,8 +94,8 @@ class Interpreter:
 
         elif node_type == "StringLiteral":
             val = node.get("value")
-            # Lexer already strips quotes, so we don't need to do it here.
-            # If we do val[1:-1], we might be stripping actual content.
+            if val and val.startswith('"') and val.endswith('"'):
+                return val[1:-1]
             return val
 
         elif node_type == "Identifier":

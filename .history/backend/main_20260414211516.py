@@ -53,10 +53,6 @@ class Interpreter:
 
         node_type = node.get("type")
 
-        # Handle linked list of statements (via next)
-        # This is a generic handler to ensure we process linked statements
-        # BUT we only want to do this if we're not already iterating in a block/program
-        
         if node_type == "Program" or node_type == "Block":
             curr = node.get("left")
             last_res = None
@@ -65,6 +61,7 @@ class Interpreter:
                     last_res = self.evaluate(curr)
                     curr = curr.get("next")
             except ReturnSignal as rs:
+                # print(f"DEBUG: Catching return {rs.value}")
                 return rs.value
             return last_res
 
@@ -94,8 +91,8 @@ class Interpreter:
 
         elif node_type == "StringLiteral":
             val = node.get("value")
-            # Lexer already strips quotes, so we don't need to do it here.
-            # If we do val[1:-1], we might be stripping actual content.
+            if val and val.startswith('"') and val.endswith('"'):
+                return val[1:-1]
             return val
 
         elif node_type == "Identifier":
@@ -331,8 +328,9 @@ async def compile_code(request: CompileRequest):
                 ast_data = json.loads(result.stdout)
                 # RUN INTERPRETER
                 interpreter = Interpreter()
-                final_output, final_vars = interpreter.run(ast_data)
-                exec_output = final_output
+                exec_output, final_vars = interpreter.run(ast_data)
+                # Get variables from main if they exist
+                # (Interpreter already does this by returning its state)
                 variables = final_vars
             except Exception as e:
                 error_lines.append(f"Interpreter Error: {str(e)}")

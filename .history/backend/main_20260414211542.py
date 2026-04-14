@@ -94,8 +94,8 @@ class Interpreter:
 
         elif node_type == "StringLiteral":
             val = node.get("value")
-            # Lexer already strips quotes, so we don't need to do it here.
-            # If we do val[1:-1], we might be stripping actual content.
+            if val and val.startswith('"') and val.endswith('"'):
+                return val[1:-1]
             return val
 
         elif node_type == "Identifier":
@@ -331,8 +331,9 @@ async def compile_code(request: CompileRequest):
                 ast_data = json.loads(result.stdout)
                 # RUN INTERPRETER
                 interpreter = Interpreter()
-                final_output, final_vars = interpreter.run(ast_data)
-                exec_output = final_output
+                exec_output, final_vars = interpreter.run(ast_data)
+                # Get variables from main if they exist
+                # (Interpreter already does this by returning its state)
                 variables = final_vars
             except Exception as e:
                 error_lines.append(f"Interpreter Error: {str(e)}")

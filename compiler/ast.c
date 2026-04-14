@@ -15,6 +15,19 @@ void print_indent(int indent) {
     for (int i = 0; i < indent; i++) printf("  ");
 }
 
+void print_escaped(const char* s) {
+    if (!s) return;
+    while (*s) {
+        if (*s == '\"') printf("\\\"");
+        else if (*s == '\\') printf("\\\\");
+        else if (*s == '\n') printf("\\n");
+        else if (*s == '\r') printf("\\r");
+        else if (*s == '\t') printf("\\t");
+        else putchar(*s);
+        s++;
+    }
+}
+
 void print_ast_json(ASTNode* node, int indent) {
     if (!node) {
         printf("null");
@@ -36,12 +49,21 @@ void print_ast_json(ASTNode* node, int indent) {
         case NODE_IDENTIFIER: printf("\"Identifier\""); break;
         case NODE_NUMBER: printf("\"Literal\""); break;
         case NODE_BLOCK: printf("\"Block\""); break;
+        case NODE_FUNC_DECL: printf("\"FuncDecl\""); break;
+        case NODE_CALL: printf("\"CallExpression\""); break;
+        case NODE_PARAM_LIST: printf("\"ParamList\""); break;
+        case NODE_ARG_LIST: printf("\"ArgList\""); break;
+        case NODE_FOR: printf("\"ForStatement\""); break;
+        case NODE_STRING: printf("\"StringLiteral\""); break;
+        case NODE_UNARY_OP: printf("\"UnaryExpression\""); break;
     }
 
     if (node->value) {
         printf(",\n");
         print_indent(indent + 1);
-        printf("\"value\": \"%s\"", node->value);
+        printf("\"value\": \"");
+        print_escaped(node->value);
+        printf("\"");
     }
 
     if (node->left) {

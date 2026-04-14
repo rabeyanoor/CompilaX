@@ -130,12 +130,12 @@ while_stmt:
 
 for_stmt:
     FOR LPAREN var_decl expression SEMICOLON update RPAREN statement {
-        /* var_decl already includes SEMICOLON */
+        /* NODE_FOR: left=init, mid=cond, right=NODE_FOR_TAIL(left=step, mid=body) */
         ASTNode* tail = create_node(NODE_PROGRAM, NULL, $6, $8, NULL);
         $$ = create_node(NODE_FOR, NULL, $3, $4, tail);
     }
     | FOR LPAREN assignment expression SEMICOLON update RPAREN statement {
-        /* assignment already includes SEMICOLON */
+        /* NODE_FOR: left=init, mid=cond, right=NODE_FOR_TAIL(left=step, mid=body) */
         ASTNode* tail = create_node(NODE_PROGRAM, NULL, $6, $8, NULL);
         $$ = create_node(NODE_FOR, NULL, $3, $4, tail);
     }
