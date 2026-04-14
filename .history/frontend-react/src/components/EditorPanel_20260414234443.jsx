@@ -10,13 +10,13 @@ export default function EditorPanel({
   loading,
   status,
 }) {
-  const [editorTheme, setEditorTheme] = useState("aetherscript-dark");
+  const [editorTheme, setEditorTheme] = useState("minilang-dark");
 
   useEffect(() => {
     const updateTheme = () => {
       const siteTheme = document.documentElement.getAttribute("data-theme");
       setEditorTheme(
-        siteTheme === "light" ? "aetherscript-light" : "aetherscript-dark",
+        siteTheme === "light" ? "minilang-light" : "minilang-dark",
       );
     };
     updateTheme();
@@ -29,10 +29,10 @@ export default function EditorPanel({
   }, []);
   const handleEditorWillMount = (monaco) => {
     // Register a new language
-    monaco.languages.register({ id: "aetherscript" });
+    monaco.languages.register({ id: "minilang" });
 
     // Register a tokens provider for the language
-    monaco.languages.setMonarchTokensProvider("aetherscript", {
+    monaco.languages.setMonarchTokensProvider("minilang", {
       keywords: [
         "let",
         "if",
@@ -136,7 +136,7 @@ export default function EditorPanel({
     });
 
     // Define all themes
-    monaco.editor.defineTheme("aetherscript-dark", {
+    monaco.editor.defineTheme("minilang-dark", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -156,7 +156,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-light", {
+    monaco.editor.defineTheme("minilang-light", {
       base: "vs",
       inherit: true,
       rules: [
@@ -176,7 +176,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-monokai", {
+    monaco.editor.defineTheme("minilang-monokai", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -196,7 +196,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-nord", {
+    monaco.editor.defineTheme("minilang-nord", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -213,26 +213,6 @@ export default function EditorPanel({
         "editor.lineHighlightBackground": "#3b4252",
         "editorLineNumber.foreground": "#4c566a",
         "editorLineNumber.activeForeground": "#d8dee9",
-      },
-    });
-
-    monaco.editor.defineTheme("aetherscript-pink", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [
-        { token: "keyword", foreground: "ff69b4", fontStyle: "bold" },
-        { token: "identifier", foreground: "ffb6c1" },
-        { token: "number", foreground: "ff1493" },
-        { token: "string", foreground: "ff69b4" },
-        { token: "comment", foreground: "db7093", fontStyle: "italic" },
-        { token: "operator", foreground: "ff61d8" },
-      ],
-      colors: {
-        "editor.background": "#1a0a1a",
-        "editorCursor.foreground": "#ff69b4",
-        "editor.lineHighlightBackground": "#2a1a2a",
-        "editorLineNumber.foreground": "#8b4570",
-        "editorLineNumber.activeForeground": "#ffb6c1",
       },
     });
   };
@@ -276,7 +256,7 @@ export default function EditorPanel({
       <div className="editor-wrapper">
         <Editor
           height="100%"
-          language="aetherscript"
+          language="minilang"
           value={code}
           onChange={(val) => onChange(val ?? "")}
           beforeMount={handleEditorWillMount}

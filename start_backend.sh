@@ -4,7 +4,7 @@
 # ─────────────────────────────────────────────
 
 PROJECT_DIR="$(cd "$(dirname "$0")" && pwd)"
-COMPILER="$PROJECT_DIR/compiler/minilang"
+COMPILER="$PROJECT_DIR/compiler/aetherscript"
 VENV="$PROJECT_DIR/venv"
 
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"

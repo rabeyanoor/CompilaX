@@ -154,7 +154,7 @@ export default function App() {
         {/* Logo */}
         <div className="logo">
           <div className="logo-dot" />
-          <span>AetherScript</span>
+          <span>AETHER SCRIPT</span>
           <span className="logo-version">v1.1.0</span>
         </div>
 

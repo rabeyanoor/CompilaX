@@ -276,7 +276,7 @@ export default function EditorPanel({
       <div className="editor-wrapper">
         <Editor
           height="100%"
-          language="aetherscript"
+          language="minilang"
           value={code}
           onChange={(val) => onChange(val ?? "")}
           beforeMount={handleEditorWillMount}

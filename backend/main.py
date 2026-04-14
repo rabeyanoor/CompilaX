@@ -21,7 +21,7 @@ app.add_middleware(
 # ── Absolute paths ────────────────────────────────────────────────────────────
 BASE_DIR      = os.path.dirname(os.path.abspath(__file__))
 PROJECT_DIR   = os.path.dirname(BASE_DIR)
-COMPILER_PATH = os.path.join(PROJECT_DIR, "compiler", "minilang")
+COMPILER_PATH = os.path.join(PROJECT_DIR, "compiler", "aetherscript")
 TEMP_DIR      = os.path.join(BASE_DIR, "temp_scripts")
 
 os.makedirs(TEMP_DIR, exist_ok=True)

@@ -108,6 +108,12 @@ export default function App() {
 
   const [variables, setVariables] = useState({});
 
+  const toggleSiteTheme = () => {
+    const newTheme = siteTheme === "dark" ? "light" : "dark";
+    setSiteTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
   const runCode = useCallback(async () => {
     if (!code.trim()) return;
     setLoading(true);
@@ -154,7 +160,7 @@ export default function App() {
         {/* Logo */}
         <div className="logo">
           <div className="logo-dot" />
-          <span>AetherScript</span>
+          <span>AETHER SCRIPT</span>
           <span className="logo-version">v1.1.0</span>
         </div>
 

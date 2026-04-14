@@ -1,7 +1,54 @@
 import Editor from "@monaco-editor/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const DEFAULT_CODE = "";
+
+const THEMES = {
+  "minilang-dark": {
+    base: "vs-dark",
+    name: "Dark",
+    colors: {
+      "editor.background": "#1a1d27",
+      "editorCursor.foreground": "#e8a020",
+      "editor.lineHighlightBackground": "#1e2130",
+      "editorLineNumber.foreground": "#4a5568",
+      "editorLineNumber.activeForeground": "#8892b0",
+    },
+  },
+  "minilang-light": {
+    base: "vs",
+    name: "Light",
+    colors: {
+      "editor.background": "#ffffff",
+      "editorCursor.foreground": "#0066cc",
+      "editor.lineHighlightBackground": "#f0f4f8",
+      "editorLineNumber.foreground": "#999999",
+      "editorLineNumber.activeForeground": "#333333",
+    },
+  },
+  "minilang-monokai": {
+    base: "vs-dark",
+    name: "Monokai",
+    colors: {
+      "editor.background": "#272822",
+      "editorCursor.foreground": "#f8f8f0",
+      "editor.lineHighlightBackground": "#3e3d32",
+      "editorLineNumber.foreground": "#75715e",
+      "editorLineNumber.activeForeground": "#f8f8f0",
+    },
+  },
+  "minilang-nord": {
+    base: "vs-dark",
+    name: "Nord",
+    colors: {
+      "editor.background": "#2e3440",
+      "editorCursor.foreground": "#d8dee9",
+      "editor.lineHighlightBackground": "#3b4252",
+      "editorLineNumber.foreground": "#4c566a",
+      "editorLineNumber.activeForeground": "#d8dee9",
+    },
+  },
+};
 
 export default function EditorPanel({
   code,
@@ -10,29 +57,13 @@ export default function EditorPanel({
   loading,
   status,
 }) {
-  const [editorTheme, setEditorTheme] = useState("aetherscript-dark");
-
-  useEffect(() => {
-    const updateTheme = () => {
-      const siteTheme = document.documentElement.getAttribute("data-theme");
-      setEditorTheme(
-        siteTheme === "light" ? "aetherscript-light" : "aetherscript-dark",
-      );
-    };
-    updateTheme();
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    return () => observer.disconnect();
-  }, []);
+  const [selectedTheme, setSelectedTheme] = useState("minilang-dark");
   const handleEditorWillMount = (monaco) => {
     // Register a new language
-    monaco.languages.register({ id: "aetherscript" });
+    monaco.languages.register({ id: "minilang" });
 
     // Register a tokens provider for the language
-    monaco.languages.setMonarchTokensProvider("aetherscript", {
+    monaco.languages.setMonarchTokensProvider("minilang", {
       keywords: [
         "let",
         "if",
@@ -136,7 +167,7 @@ export default function EditorPanel({
     });
 
     // Define all themes
-    monaco.editor.defineTheme("aetherscript-dark", {
+    monaco.editor.defineTheme("minilang-dark", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -156,7 +187,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-light", {
+    monaco.editor.defineTheme("minilang-light", {
       base: "vs",
       inherit: true,
       rules: [
@@ -176,7 +207,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-monokai", {
+    monaco.editor.defineTheme("minilang-monokai", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -196,7 +227,7 @@ export default function EditorPanel({
       },
     });
 
-    monaco.editor.defineTheme("aetherscript-nord", {
+    monaco.editor.defineTheme("minilang-nord", {
       base: "vs-dark",
       inherit: true,
       rules: [
@@ -213,26 +244,6 @@ export default function EditorPanel({
         "editor.lineHighlightBackground": "#3b4252",
         "editorLineNumber.foreground": "#4c566a",
         "editorLineNumber.activeForeground": "#d8dee9",
-      },
-    });
-
-    monaco.editor.defineTheme("aetherscript-pink", {
-      base: "vs-dark",
-      inherit: true,
-      rules: [
-        { token: "keyword", foreground: "ff69b4", fontStyle: "bold" },
-        { token: "identifier", foreground: "ffb6c1" },
-        { token: "number", foreground: "ff1493" },
-        { token: "string", foreground: "ff69b4" },
-        { token: "comment", foreground: "db7093", fontStyle: "italic" },
-        { token: "operator", foreground: "ff61d8" },
-      ],
-      colors: {
-        "editor.background": "#1a0a1a",
-        "editorCursor.foreground": "#ff69b4",
-        "editor.lineHighlightBackground": "#2a1a2a",
-        "editorLineNumber.foreground": "#8b4570",
-        "editorLineNumber.activeForeground": "#ffb6c1",
       },
     });
   };
@@ -265,6 +276,25 @@ export default function EditorPanel({
     <div className="panel" onKeyDown={handleKeyDown}>
       <div className="panel-header">
         <span className="panel-title">Source Code</span>
+        <select
+          className="theme-select"
+          value={selectedTheme}
+          onChange={(e) => setSelectedTheme(e.target.value)}
+          style={{
+            fontSize: "11px",
+            padding: "2px 6px",
+            borderRadius: "4px",
+            border: "1px solid var(--border)",
+            background: "var(--bg-secondary)",
+            color: "var(--text)",
+            cursor: "pointer",
+          }}
+        >
+          <option value="minilang-dark">🌙 Dark</option>
+          <option value="minilang-light">☀️ Light</option>
+          <option value="minilang-monokai">🍑 Monokai</option>
+          <option value="minilang-nord">❄️ Nord</option>
+        </select>
         <span
           className="panel-count"
           style={{ fontSize: "11px", color: "var(--text-muted)" }}
@@ -276,11 +306,11 @@ export default function EditorPanel({
       <div className="editor-wrapper">
         <Editor
           height="100%"
-          language="aetherscript"
+          language="minilang"
           value={code}
           onChange={(val) => onChange(val ?? "")}
           beforeMount={handleEditorWillMount}
-          theme={editorTheme}
+          theme="minilang-theme"
           options={{
             fontSize: 14,
             fontFamily: "'JetBrains Mono', 'Fira Code', monospace",

@@ -6,17 +6,8 @@ import ASTPanel from "./components/ASTPanel";
 import OutputPanel from "./components/OutputPanel";
 
 const SITE_THEMES = [
-  { id: "dark", label: "🌙 Dark" },
-  { id: "light", label: "☀️ Light" },
-  { id: "pink", label: "💖 Pink" },
-  { id: "monokai", label: "🍑 Monokai" },
-  { id: "nord", label: "❄️ Nord" },
-  { id: "dracula", label: "🧛 Dracula" },
-  { id: "solarized", label: "☀️ Solarized" },
-  { id: "gruvbox", label: "🎨 Gruvbox" },
-  { id: "onedark", label: "🌑 One Dark" },
-  { id: "github", label: "🐙 GitHub" },
-  { id: "nord-frost", label: "❄️ Nord Frost" },
+  { id: "dark", label: "🌙 Dark", icon: "🌙" },
+  { id: "light", label: "☀️ Light", icon: "☀️" },
 ];
 
 // ── Tab definitions
@@ -108,6 +99,12 @@ export default function App() {
 
   const [variables, setVariables] = useState({});
 
+  const toggleSiteTheme = () => {
+    const newTheme = siteTheme === "dark" ? "light" : "dark";
+    setSiteTheme(newTheme);
+    document.documentElement.setAttribute("data-theme", newTheme);
+  };
+
   const runCode = useCallback(async () => {
     if (!code.trim()) return;
     setLoading(true);
@@ -154,35 +151,9 @@ export default function App() {
         {/* Logo */}
         <div className="logo">
           <div className="logo-dot" />
-          <span>AetherScript</span>
+          <span>AETHER SCRIPT</span>
           <span className="logo-version">v1.1.0</span>
         </div>
-
-        {/* Theme Selector */}
-        <select
-          value={siteTheme}
-          onChange={(e) => {
-            setSiteTheme(e.target.value);
-            document.documentElement.setAttribute("data-theme", e.target.value);
-          }}
-          style={{
-            marginLeft: "auto",
-            marginRight: "8px",
-            fontSize: "12px",
-            padding: "4px 8px",
-            borderRadius: "6px",
-            border: "1px solid var(--border)",
-            background: "var(--bg-secondary)",
-            color: "var(--text-primary)",
-            cursor: "pointer",
-          }}
-        >
-          {SITE_THEMES.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.label}
-            </option>
-          ))}
-        </select>
 
         {/* Reset */}
         <button className="btn-reset" onClick={handleReset} title="Reset all">
@@ -197,6 +168,16 @@ export default function App() {
             <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
             <path d="M3 3v5h5" />
           </svg>
+        </button>
+
+        {/* Theme Toggle */}
+        <button
+          className="btn-reset"
+          onClick={toggleSiteTheme}
+          title="Toggle site theme"
+          style={{ marginLeft: "8px", fontSize: "16px" }}
+        >
+          {siteTheme === "dark" ? "☀️" : "🌙"}
         </button>
       </header>
 
