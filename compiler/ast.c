@@ -56,6 +56,8 @@ void print_ast_json(ASTNode* node, int indent) {
         case NODE_FOR: printf("\"ForStatement\""); break;
         case NODE_STRING: printf("\"StringLiteral\""); break;
         case NODE_UNARY_OP: printf("\"UnaryExpression\""); break;
+        case NODE_TERNARY: printf("\"TernaryExpression\""); break;
+        case NODE_BREAK: printf("\"BreakStatement\""); break;
     }
 
     if (node->value) {

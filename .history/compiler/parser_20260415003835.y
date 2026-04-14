@@ -18,15 +18,14 @@ ASTNode* root;
 }
 
 %token <sval> IDENTIFIER NUMBER STRING_LITERAL
-%token LET IF ELSE WHILE PRINT RETURN FN FOR TYPE MOD COUT LSHIFT BREAK QMARK COLON
+%token LET IF ELSE WHILE PRINT RETURN FN FOR TYPE MOD COUT LSHIFT
 %token ASSIGN PLUS MINUS MULT DIV LT GT EQ NE LE GE AND OR INC DEC NOT ADD_ASSIGN SUB_ASSIGN MUL_ASSIGN DIV_ASSIGN MOD_ASSIGN
 %token LPAREN RPAREN LBRACE RBRACE SEMICOLON COMMA
 
-%type <nval> program statement_list statement var_decl declarator_list declarator assignment if_stmt while_stmt print_stmt func_decl return_stmt for_stmt update expression term unary factor block params args func_call cout_stmt cout_expr_list type_specifier break_stmt
+%type <nval> program statement_list statement var_decl declarator_list declarator assignment if_stmt while_stmt print_stmt func_decl return_stmt for_stmt update expression term unary factor block params args func_call cout_stmt cout_expr_list type_specifier
 
 %start program
 
-%right QMARK COLON
 %left OR
 %left AND
 %left EQ NE
@@ -63,17 +62,12 @@ statement:
     | if_stmt { $$ = $1; }
     | while_stmt { $$ = $1; }
     | print_stmt { $$ = $1; }
-    | break_stmt { $$ = $1; }
     | cout_stmt { $$ = $1; }
     | func_decl { $$ = $1; }
     | return_stmt { $$ = $1; }
     | for_stmt { $$ = $1; }
     | func_call SEMICOLON { $$ = $1; }
     | block { $$ = $1; }
-    ;
-
-break_stmt:
-    BREAK SEMICOLON { $$ = create_node(NODE_BREAK, NULL, NULL, NULL, NULL); }
     ;
 
 cout_stmt:
@@ -122,14 +116,6 @@ assignment:
     | IDENTIFIER DEC SEMICOLON {
         /* Pseudo-assignment for x-- */
         $$ = create_node(NODE_ASSIGN, $1, create_node(NODE_BINARY_OP, "-", create_node(NODE_IDENTIFIER, $1, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
-    }
-    | INC IDENTIFIER SEMICOLON {
-        /* Pre-increment: ++x */
-        $$ = create_node(NODE_ASSIGN, $2, create_node(NODE_BINARY_OP, "+", create_node(NODE_IDENTIFIER, $2, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
-    }
-    | DEC IDENTIFIER SEMICOLON {
-        /* Pre-decrement: --x */
-        $$ = create_node(NODE_ASSIGN, $2, create_node(NODE_BINARY_OP, "-", create_node(NODE_IDENTIFIER, $2, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
     }
     | IDENTIFIER ADD_ASSIGN expression SEMICOLON {
         $$ = create_node(NODE_ASSIGN, $1, create_node(NODE_BINARY_OP, "+", create_node(NODE_IDENTIFIER, $1, NULL, NULL, NULL), NULL, $3), NULL, NULL);
@@ -186,16 +172,10 @@ update:
     | IDENTIFIER DEC {
         $$ = create_node(NODE_ASSIGN, $1, create_node(NODE_BINARY_OP, "-", create_node(NODE_IDENTIFIER, $1, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
     }
-    | INC IDENTIFIER {
-        $$ = create_node(NODE_ASSIGN, $2, create_node(NODE_BINARY_OP, "+", create_node(NODE_IDENTIFIER, $2, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
-    }
-    | DEC IDENTIFIER {
-        $$ = create_node(NODE_ASSIGN, $2, create_node(NODE_BINARY_OP, "-", create_node(NODE_IDENTIFIER, $2, NULL, NULL, NULL), NULL, create_node(NODE_NUMBER, "1", NULL, NULL, NULL)), NULL, NULL);
-    }
     ;
 
 print_stmt:
-    PRINT LPAREN args RPAREN SEMICOLON {
+    PRINT LPAREN expression RPAREN SEMICOLON {
         $$ = create_node(NODE_PRINT, NULL, $3, NULL, NULL);
     }
     ;
@@ -248,7 +228,6 @@ expression:
     | expression NE term { $$ = create_node(NODE_BINARY_OP, "!=", $1, NULL, $3); }
     | expression AND term { $$ = create_node(NODE_BINARY_OP, "&&", $1, NULL, $3); }
     | expression OR term { $$ = create_node(NODE_BINARY_OP, "||", $1, NULL, $3); }
-    | expression QMARK expression COLON expression { $$ = create_node(NODE_TERNARY, NULL, $1, $3, $5); }
     ;
 
 term:

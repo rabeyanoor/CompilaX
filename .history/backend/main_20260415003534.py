@@ -35,9 +35,6 @@ class ReturnSignal(Exception):
     def __init__(self, value):
         self.value = value
 
-class BreakSignal(Exception):
-    pass
-
 class Interpreter:
     def __init__(self):
         self.variables = {}
@@ -152,21 +149,11 @@ class Interpreter:
             else:
                 return self.evaluate(node.get("right"))
 
-        elif node_type == "TernaryExpression":
-            cond = self.evaluate(node.get("left"))
-            if self.is_true(cond):
-                return self.evaluate(node.get("mid"))
-            else:
-                return self.evaluate(node.get("right"))
-
         elif node_type == "WhileStatement":
             cond_node = node.get("left")
             body_node = node.get("mid")
-            try:
-                while self.is_true(self.evaluate(cond_node)):
-                    self.evaluate(body_node)
-            except BreakSignal:
-                pass
+            while self.is_true(self.evaluate(cond_node)):
+                self.evaluate(body_node)
             return None
 
         elif node_type == "ForStatement":
@@ -176,57 +163,15 @@ class Interpreter:
             if tail_node:
                 step_node = tail_node.get("left")
                 body_node = tail_node.get("mid")
-                try:
-                    while self.is_true(self.evaluate(cond_node)):
-                        self.evaluate(body_node)
-                        self.evaluate(step_node)
-                except BreakSignal:
-                    pass
+                while self.is_true(self.evaluate(cond_node)):
+                    self.evaluate(body_node)
+                    self.evaluate(step_node)
             return None
 
-        elif node_type == "BreakStatement":
-            raise BreakSignal()
-
         elif node_type == "PrintStatement":
-            args_node = node.get("left")
-            
-            # Print arguments
-            args_values = []
-            curr_arg = args_node
-            
-            # Helper to evaluate arg list or single expression
-            def collect_args(node):
-                if not node: return []
-                if node.get("type") == "ArgList":
-                    return [self.evaluate(node.get("left"))] + collect_args(node.get("right"))
-                return [self.evaluate(node)]
-
-            args_values = collect_args(args_node)
-            
-            # Handle printf style formatting (simplified)
-            if len(args_values) > 1 and isinstance(args_values[0], str) and "%" in args_values[0]:
-                fmt = args_values[0]
-                vals = args_values[1:]
-                try:
-                    # Simple replacement of %d, %f, %s
-                    res = fmt
-                    for v in vals:
-                        # Find first occurrence of %d, %f, %s or %
-                        import re
-                        match = re.search(r"%[dfsu]", res)
-                        if match:
-                            res = res[:match.start()] + str(v) + res[match.end():]
-                        else:
-                            break
-                    self.output_buffer.append(res)
-                    return res
-                except:
-                    pass
-            
-            # Default print behavior
-            res = " ".join(map(str, args_values))
-            self.output_buffer.append(res)
-            return args_values[0] if args_values else None
+            val = self.evaluate(node.get("left"))
+            self.output_buffer.append(str(val))
+            return val
 
         elif node_type == "FuncDecl":
             name = node.get("value", "").strip()

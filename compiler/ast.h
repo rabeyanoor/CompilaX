@@ -23,7 +23,9 @@ typedef enum {
     NODE_ARG_LIST,
     NODE_FOR,
     NODE_STRING,
-    NODE_UNARY_OP
+    NODE_UNARY_OP,
+    NODE_TERNARY,
+    NODE_BREAK
 } NodeType;
 
 typedef struct ASTNode {

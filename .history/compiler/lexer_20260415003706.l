@@ -20,17 +20,15 @@ STRING      \"(\\.|[^\"\\])*\"
 
 "long"([ \t]+"long")? { store_token("KEYWORD", yytext); return TYPE; }
 "using"[ \t]+namespace[ \t]+{ID}; { /* skip using namespace std; */ }
-"cout"          { store_token("KEYWORD", "cout"); return COUT; }
-"<<"            { store_token("OPERATOR", "<<"); return LSHIFT; } 
+"cout"          { store_token("KEYWORD", "cout"); return PRINT; }
+"<<"            { store_token("OPERATOR", "<<"); return LT; } 
 
 "let"           { store_token("KEYWORD", "let"); return LET; }
 "if"            { store_token("KEYWORD", "if"); return IF; }
 "else"          { store_token("KEYWORD", "else"); return ELSE; }
 "while"         { store_token("KEYWORD", "while"); return WHILE; }
-"printf"        { store_token("KEYWORD", "printf"); return PRINT; }
 "print"         { store_token("KEYWORD", "print"); return PRINT; }
 "return"        { store_token("KEYWORD", "return"); return RETURN; }
-"break"         { store_token("KEYWORD", "break"); return BREAK; }
 "fn"            { store_token("KEYWORD", "fn"); return FN; }
 "for"           { store_token("KEYWORD", "for"); return FOR; }
 "int"           { store_token("KEYWORD", "int"); return TYPE; }
@@ -50,8 +48,6 @@ STRING      \"(\\.|[^\"\\])*\"
                     return STRING_LITERAL; 
                 }
 
-"?"             { store_token("OPERATOR", "?"); return QMARK; }
-":"             { store_token("OPERATOR", ":"); return COLON; }
 "="             { store_token("OPERATOR", "="); return ASSIGN; }
 "+="            { store_token("OPERATOR", "+="); return ADD_ASSIGN; }
 "-="            { store_token("OPERATOR", "-="); return SUB_ASSIGN; }
